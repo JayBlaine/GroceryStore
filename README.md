@@ -8,7 +8,7 @@ The project is a standard Maven project, so you can import it to your IDE of cho
 
 This project was created from https://start.vaadin.com.
 
-# JDBC Documentation
+## JDBC Documentation
 
 https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/
 
