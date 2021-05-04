@@ -91,12 +91,12 @@ public class SQLConnect implements Serializable{
 		
 			preparedStatement = connect.prepareStatement("insert into grocerystore.account values " 
 														+ "(?, ?, ?, ?, ?, ?)");
-			preparedStatement.setString(0, item.getEmail());
-			preparedStatement.setString(1, Application.encrypt(item.getpass()));
-			preparedStatement.setString(2, item.getFirst());
-			preparedStatement.setString(3, item.getLast());
-			preparedStatement.setString(4, item.getAdd());
-			preparedStatement.setString(5, item.getPhone());
+			preparedStatement.setString(1, item.getEmail());
+			preparedStatement.setString(2, Application.encrypt(item.getpass()));
+			preparedStatement.setString(3, item.getFirst());
+			preparedStatement.setString(4, item.getLast());
+			preparedStatement.setString(5, item.getAdd());
+			preparedStatement.setString(6, item.getPhone());
 			
 		
 			try 
