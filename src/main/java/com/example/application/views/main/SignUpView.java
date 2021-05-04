@@ -1,14 +1,13 @@
-package com.example.application.views.customerform;
+package com.example.application.views.main;
 
-import com.example.application.Account;
 import com.example.application.data.entity.SamplePerson;
 import com.example.application.data.service.SamplePersonService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.customfield.CustomField;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -17,24 +16,18 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
-import com.vaadin.flow.component.dependency.CssImport;
-//import com.vaadin.flow.component.checkbox.Checkbox;
-//import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.router.Route;
+import com.example.application.Account;
+import com.example.application.Application;
+import com.example.application.SQLConnect;
 
-@Route(value = "customer-form", layout = MainView.class)
-@PageTitle("Customer Form")
-@CssImport("./views/customerform/customer-form-view.css")
-public class CustomerFormView extends Div {
-
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+@Route(value = "SignUp", layout = MainView.class)
+@PageTitle("SignUp")
+public class SignUpView extends Div{
 	private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
+    private TextField password = new TextField("PAssword");
     private EmailField email = new EmailField("Email address");
     private PhoneNumberField phone = new PhoneNumberField("Phone number");
     private TextField street = new TextField("Street address");
@@ -42,14 +35,16 @@ public class CustomerFormView extends Div {
     private TextField city = new TextField("City");
     private ComboBox<String> state = new ComboBox<>("State");
     private ComboBox<String> country = new ComboBox<>("Country");
+    public Account newAcc;
+    public String test;
 
     private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private Button save = new Button("SignUp");
 
     private Binder<SamplePerson> binder = new Binder<SamplePerson>(SamplePerson.class);
 
-    public CustomerFormView(SamplePersonService personService) {
-        addClassName("customer-form-view");
+    public SignUpView(SamplePersonService personService) {
+        addClassName("signup-form-view");
 
         add(createTitle());
         add(createFormLayout());
@@ -58,10 +53,30 @@ public class CustomerFormView extends Div {
         binder.bindInstanceFields(this);
         clearForm();
 
-        cancel.addClickListener(e -> clearForm());
+        cancel.addClickListener(e -> {
+        clearForm(); 
+        UI.getCurrent().navigate("SignUp");});
         save.addClickListener(e -> {
-            personService.update(binder.getBean());
-            Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
+        	try {
+				newAcc = new Account(email.getValue(), password.getValue(), firstName.getValue(), lastName.getValue(), street.getValue(), phone.getValue());
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+            try {
+            	SQLConnect pgm = Application.setPGM("user1", "pass");
+				newAcc.storeAccount(pgm, newAcc);
+				Notification.show("Account created successfully");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				test = firstName.getValue();
+				String test2 = email.getValue();
+				//Notification.show(test + " " + test2);
+				Notification.show("Error creating Account");
+				e1.printStackTrace();
+			}
+        	//personService.update(binder.getBean());
+            //Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
             clearForm();
         });
     }
@@ -81,8 +96,8 @@ public class CustomerFormView extends Div {
         formLayout.add(street, 2);
         postalCode.setPattern("\\d*");
         postalCode.setPreventInvalidInput(true);
-        country.setItems("Country 1", "Country 2", "Country 3");
-        state.setItems("State A", "State B", "State C", "State D");
+        country.setItems("United States of America", "Canada", "Mexico");
+        state.setItems("Arizona", "Texas", "Colorado", "Oklahoma");
         formLayout.add(postalCode, city, state, country);
         return formLayout;
     }

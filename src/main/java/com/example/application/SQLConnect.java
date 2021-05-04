@@ -1,4 +1,5 @@
 package com.example.application;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,18 +11,25 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 
-public class SQLConnect {
+public class SQLConnect implements Serializable{
 	
+	/**
+	 * 
+	 */
+	
+	private static final long serialVersionUID = 87600184106574988L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
-
+	
 	    // error constants
 	public static final int ER_DUP_ENTRY = 1062;
 	public static final int ER_DUP_ENTRY_WITH_KEY_NAME = 1586;
 	ZoneId zid = ZoneId.of("America/Chicago");
 	LocalDate date = LocalDate.now(zid);
+	//boolean for customer view
+	
 
 	public SQLConnect(String user, String password) throws Exception
 	{
@@ -30,7 +38,7 @@ public class SQLConnect {
 	            // This will load the MySQL driver, each DBMS has its own driver
 	        Class.forName("com.mysql.cj.jdbc.Driver"); //just added .cj
 	        this.connect = DriverManager.getConnection
-	                ("jdbc:mysql://35.223.169.93:3306/?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Chicago"
+	                ("jdbc:mysql://34.68.33.39:3306/?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Chicago"
 	                , user
 	                , password);
 	        System.out.println("TEST2");
@@ -49,9 +57,11 @@ public class SQLConnect {
 		
 		if (resultSet.getFetchSize() == 1) {
 			if(pass == Application.decrypt(resultSet.getString("pass"))) {
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	

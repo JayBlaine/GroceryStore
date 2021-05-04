@@ -12,8 +12,6 @@ public class SamplePerson extends AbstractEntity {
     private String lastName;
     private String email;
     private String phone;
-    private LocalDate dateOfBirth;
-    private String occupation;
     private boolean important;
 
     public String getFirstName() {
@@ -39,18 +37,6 @@ public class SamplePerson extends AbstractEntity {
     }
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-    public String getOccupation() {
-        return occupation;
-    }
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
     }
     public boolean isImportant() {
         return important;

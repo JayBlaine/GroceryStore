@@ -2,11 +2,15 @@ package com.example.application.views.main;
 
 import java.util.Optional;
 
+import com.example.application.SQLConnect;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.HtmlComponent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -21,6 +25,7 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.main.MainView;
+import com.example.application.views.main.LoginView;
 import com.example.application.views.homepage.HomePageView;
 import com.example.application.views.customerform.CustomerFormView;
 import com.example.application.views.paymentform.PaymentFormView;
@@ -35,9 +40,15 @@ import com.vaadin.flow.component.dependency.CssImport;
 @CssImport("./views/main/main-view.css")
 public class MainView extends AppLayout {
 
-    private final Tabs menu;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6845702965780995053L;
+	private final Tabs menu;
     private H1 viewTitle;
-
+    HtmlComponent br = new HtmlComponent("br");
+    
+    
     public MainView() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
@@ -55,6 +66,8 @@ public class MainView extends AppLayout {
         layout.add(new DrawerToggle());
         viewTitle = new H1();
         layout.add(viewTitle);
+        layout.add(br);
+        //layout.add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");}));
         layout.add(new Avatar());
         return layout;
     }
@@ -85,7 +98,7 @@ public class MainView extends AppLayout {
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{createTab("Home Page", HomePageView.class), createTab("Customer Form", CustomerFormView.class),
+        return new Tab[]{ createTab("Home Page", HomePageView.class), createTab("Customer Form", CustomerFormView.class),
                 createTab("Payment Form", PaymentFormView.class)};
     }
 
