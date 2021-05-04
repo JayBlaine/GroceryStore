@@ -41,7 +41,7 @@ public class LoginView extends Div{
 	    add(
 			new Button("Login", event ->{
 				try {
-					Application.setPGM(email.getValue(), pass.getValue());
+					Application.setPGM("user1", "pass");
 					Application.pgm.login(email.getValue(), pass.getValue());
 					 Notification.show("Successfully logged in");
 					 LoginView.setBoo(true);

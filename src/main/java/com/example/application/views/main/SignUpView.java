@@ -27,7 +27,8 @@ import com.example.application.SQLConnect;
 public class SignUpView extends Div{
 	private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
-    private TextField password = new TextField("PAssword");
+    private TextField password = new TextField("Password");
+    private TextField confirm = new TextField("Confirm Password");
     private EmailField email = new EmailField("Email address");
     private PhoneNumberField phone = new PhoneNumberField("Phone number");
     private TextField street = new TextField("Street address");
@@ -57,6 +58,7 @@ public class SignUpView extends Div{
         clearForm(); 
         UI.getCurrent().navigate("SignUp");});
         save.addClickListener(e -> {
+        	
         	try {
 				newAcc = new Account(email.getValue(), password.getValue(), firstName.getValue(), lastName.getValue(), street.getValue(), phone.getValue());
 			} catch (Exception e2) {
@@ -64,9 +66,10 @@ public class SignUpView extends Div{
 				e2.printStackTrace();
 			}
             try {
-            	SQLConnect pgm = Application.setPGM("user1", "pass");
-				newAcc.storeAccount(pgm, newAcc);
+            	
+				newAcc.storeAccount(Application.setPGM("user1", "pass"), newAcc);
 				Notification.show("Account created successfully");
+				
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				test = firstName.getValue();
@@ -78,7 +81,9 @@ public class SignUpView extends Div{
         	//personService.update(binder.getBean());
             //Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
             clearForm();
+        	
         });
+        
     }
 
     private void clearForm() {
@@ -99,6 +104,7 @@ public class SignUpView extends Div{
         country.setItems("United States of America", "Canada", "Mexico");
         state.setItems("Arizona", "Texas", "Colorado", "Oklahoma");
         formLayout.add(postalCode, city, state, country);
+        formLayout.add(password, confirm);
         return formLayout;
     }
 

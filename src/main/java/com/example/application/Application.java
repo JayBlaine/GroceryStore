@@ -10,8 +10,10 @@ import com.example.application.SQLConnect;
  * The entry point of the Spring Boot application.
  */
 @SpringBootApplication
-public class Application extends SpringBootServletInitializer {
-	public static SQLConnect pgm;
+public class Application extends SpringBootServletInitializer{
+	
+public static SQLConnect pgm;
+	
 							
 	
     public static void main(String[] args) throws Exception {

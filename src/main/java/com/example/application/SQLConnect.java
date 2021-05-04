@@ -53,14 +53,13 @@ public class SQLConnect implements Serializable{
 	
 	public boolean login(String email, String pass) throws SQLException {
 		statement = connect.createStatement();
-		resultSet = statement.executeQuery("select pass from grocerystore.account where email=" + email);
+		resultSet = statement.executeQuery("select pass from grocerystore.account where email=\"" + email+"\"");
 		
-		if (resultSet.getFetchSize() == 1) {
-			if(pass == Application.decrypt(resultSet.getString("pass"))) {
+		if(pass == Application.decrypt(resultSet.getString("pass"))) {
 				
-				return true;
-			}
+			return true;
 		}
+		
 		
 		return false;
 	}
