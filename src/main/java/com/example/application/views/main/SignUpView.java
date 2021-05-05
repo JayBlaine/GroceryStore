@@ -56,8 +56,13 @@ public class SignUpView extends Div{
 
         cancel.addClickListener(e -> {
         clearForm(); 
-        UI.getCurrent().navigate("SignUp");});
+        UI.getCurrent().navigate("Login");});
+        
         save.addClickListener(e -> {
+        	if(email.isEmpty()) {
+        		Notification.show("Error creating Account: Please fill out all textfields");
+        	}else {
+        		
         	String fin = street.getValue() + "-" + city.getValue() + "-" +  state.getValue() + "-" + country.getValue() + "-" + postalCode.getValue(); 
         	try {
 				newAcc = new Account(email.getValue(), password.getValue(), firstName.getValue(), lastName.getValue(), fin, phone.getValue());
@@ -78,7 +83,7 @@ public class SignUpView extends Div{
         	//personService.update(binder.getBean());
             //Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
             clearForm();
-        	
+        	}
         });
         
     }

@@ -44,14 +44,30 @@ public class LoginView extends Div{
 			new Button("Login", event ->{
 				if(loggedIn) {
 					Notification.show("Already Logged In");
+					
+				}else  if(email.isEmpty() || pass.isEmpty()) {
+					
+						Notification.show("Please fill out fields");
+						
 				}else {
 					try {
 						Application.setPGM("user1", "pass");
-						Application.pgm.login(email.getValue(), pass.getValue());
+					    
+						loggedIn = Application.pgm.login(email.getValue(), pass.getValue());
+						if(loggedIn) {
+						//System.out.println(Application.pgm.login(email.getValue(), pass.getValue()));
 						user = Application.pgm.getAcc(email.getValue());
+						
 						Notification.show("Successfully logged in");
-						LoginView.setBoo(true);
 						UI.getCurrent().navigate("Home-Page");
+						}else {
+							UI.getCurrent().navigate("Login");
+							Notification.show("Login error");
+							
+						}
+						
+						
+						//UI.getCurrent().navigate("Home-Page");
 					} catch (Exception e) {
 					// TODO Auto-generated catch block
 						Notification.show("Login error");
@@ -61,13 +77,18 @@ public class LoginView extends Div{
 				}),
 			br,
 			new Button("Clear", event -> {
-				email.setValue(" ");
-				pass.setValue(" ");
+				email.setValue("");
+				pass.setValue("");
 			}),
 			
 			br,
 			new Button("Sign Up", event ->{
 				UI.getCurrent().navigate("SignUp");
+			}),
+			
+			new Button("LogOut", event ->{
+				loggedIn = false;
+				UI.getCurrent().navigate("Home-Page");
 			})
 			);
      

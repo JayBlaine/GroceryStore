@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.vaadin.flow.component.notification.Notification;
 
@@ -55,15 +57,16 @@ public class SQLConnect implements Serializable{
 	
 	public boolean login(String email, String pass) throws SQLException {
 		statement = connect.createStatement();
-		resultSet = statement.executeQuery("select pass from grocerystore.account where email=\"" + email+"\"");
+		resultSet = statement.executeQuery("select * from grocerystore.account where email=\"" + email+"\"");
 		
-		while(resultSet.next()) {
-		if(pass.equals(Application.decrypt(resultSet.getString("pass")))) {
+		while(resultSet.next() != false) {
+			System.out.println(resultSet.getString("pass"));
+	    	if(pass.equals(Application.decrypt(resultSet.getString("pass")))) {
 				
-			return true;
-		}
+				return true;
+			}
 			
-		}
+	    }
 		return false;
 	}
 	
@@ -151,24 +154,24 @@ public class SQLConnect implements Serializable{
 		return -1;
 	}
 	
-	public HashMap<Integer, Item> getAllItems() throws SQLException {
+	public List<Item> getAllItems() throws SQLException {
 		statement = connect.createStatement();
-		resultSet = statement.executeQuery("select * from groceryStore.item");
+		resultSet = statement.executeQuery("select * from grocerystore.item");
 		
-		HashMap<Integer, Item> items = new HashMap<Integer, Item>();
-		
+		List<Item> items = new ArrayList<Item>();
+		//items.add(null);
 		while(resultSet.next()) {
+			
 			int id = resultSet.getInt("itemId");
 			String name = resultSet.getString("name");
 			double price = resultSet.getDouble("price");
-			int quantity = resultSet.getInt("quantity");
-			Date exp = resultSet.getDate("exp");
+			int quantity = resultSet.getInt("quantity");			
 			String desc = resultSet.getString("description");
 			String dept = resultSet.getString("dept");
 			String pic = resultSet.getString("img");
-			Item tempIt = new Item(id, name, price, quantity, exp, desc, dept, pic);
+			Item tempIt = new Item(id, name, price, quantity, desc, dept, pic);
 			
-			items.put(id,  tempIt);
+			items.add(tempIt);
 		}
 		return items;
 		

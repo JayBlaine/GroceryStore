@@ -17,7 +17,9 @@ public class Account {
 	private HashMap <Item, Integer> cart = new HashMap<Item, Integer>();
 	//private SQLConnect conn;
 	
-	public Account(String email, String pass, String first, String last, String add, String phone) throws Exception {
+	public Account(String email, String pass, String first, String last, String add, String phone)  {
+		
+	   
 		this.email = email;
 		this.pass = pass;
 		this.first = first;
@@ -27,11 +29,14 @@ public class Account {
 		
 	}
 	
-	public void addToCart(Item item) {
+	public void addToCart(Item item, Integer amt) {
 		if(!cart.containsKey(item))
-			this.cart.put(item, 1);
+			this.cart.put(item, amt);
 		else
-			this.cart.put(item, this.cart.get(item)+1);
+			this.cart.put(item, amt);
+		for (Entry<Item, Integer> entry : this.cart.entrySet()) {
+			System.out.println(entry.getKey().getName());
+		}
 	}
 	
 	public void removeFromCart(Item item) {

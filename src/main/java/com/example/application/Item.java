@@ -15,11 +15,10 @@ public class Item {
 	private String pic;
 	private java.util.Date exp;
 	
-	public Item (int id, String name, double price, int quantity, java.util.Date exp2, String desc, String dept, String pic) {
+	public Item (int id, String name, double price, int quantity, String desc, String dept, String pic) {
 		this.id = id;
 		this.name = name;
-		this.price = price;
-		this.exp = exp2;
+		this.price = price;	
 		this.desc = desc;
 		this.dept = dept;
 		this.pic = pic;
@@ -38,8 +37,6 @@ public class Item {
 	public void setDesc(String newDesc) { this.desc = newDesc; }
 	public String getDept() { return this.dept; }
 	public void setDept(String newDept) { this.dept = newDept; }
-	public Date getExp() { return (Date) this.exp; }
-	public void setExp(Date newExp) { this.exp = newExp; }
 	public String getPic() { return this.pic; }
 	public void setURL(String newP) { this.pic = newP; }
 }
