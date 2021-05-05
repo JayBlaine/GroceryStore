@@ -24,6 +24,7 @@ public class Account {
 		this.last = last;
 		this.address = add;
 		this.phone = phone;
+		
 	}
 	
 	public void addToCart(Item item) {

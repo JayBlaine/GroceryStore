@@ -1,6 +1,9 @@
 package com.example.application.views.customerform;
 
 import com.example.application.Account;
+import com.example.application.Application;
+import com.example.application.SQLConnect;
+import com.example.application.views.main.LoginView;
 import com.example.application.data.entity.SamplePerson;
 import com.example.application.data.service.SamplePersonService;
 import com.vaadin.flow.component.Component;
@@ -35,20 +38,21 @@ public class CustomerFormView extends Div {
 	private static final long serialVersionUID = 1L;
 	private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
-    private EmailField email = new EmailField("Email address");
-    private PhoneNumberField phone = new PhoneNumberField("Phone number");
+    private TextField password = new TextField("Password");
+    private TextField confirm = new TextField("Confirm Password");
+    private TextField email = new TextField("Email address");
+    private TextField phone = new TextField("Phone number");
     private TextField street = new TextField("Street address");
     private TextField postalCode = new TextField("Postal code");
     private TextField city = new TextField("City");
     private ComboBox<String> state = new ComboBox<>("State");
     private ComboBox<String> country = new ComboBox<>("Country");
-
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
-
     private Binder<SamplePerson> binder = new Binder<SamplePerson>(SamplePerson.class);
-
-    public CustomerFormView(SamplePersonService personService) {
+    public Account use;
+    
+    public CustomerFormView(SamplePersonService personService) throws Exception {
         addClassName("customer-form-view");
 
         add(createTitle());
@@ -64,6 +68,15 @@ public class CustomerFormView extends Div {
             Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
             clearForm();
         });
+        if(LoginView.loggedIn) {
+        	 //use = Application.pgm.getAcc(email);
+        	 firstName.setValue(LoginView.user.getFirst());
+        	 lastName.setValue(LoginView.user.getLast());
+        	 password.setValue(LoginView.user.getpass());
+        	 email.setValue(LoginView.user.getEmail());
+        	 phone.setValue(LoginView.user.getPhone());
+        	 
+        }
     }
 
     private void clearForm() {
@@ -71,7 +84,7 @@ public class CustomerFormView extends Div {
     }
 
     private Component createTitle() {
-        return new H3("Personal information");
+        return new H3("Account Details");
     }
 
     private Component createFormLayout() {
@@ -84,6 +97,7 @@ public class CustomerFormView extends Div {
         country.setItems("Country 1", "Country 2", "Country 3");
         state.setItems("State A", "State B", "State C", "State D");
         formLayout.add(postalCode, city, state, country);
+        formLayout.add(password, confirm);
         return formLayout;
     }
 

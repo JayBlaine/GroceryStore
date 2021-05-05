@@ -58,9 +58,9 @@ public class SignUpView extends Div{
         clearForm(); 
         UI.getCurrent().navigate("SignUp");});
         save.addClickListener(e -> {
-        	
+        	String fin = street.getValue() + "-" + city.getValue() + "-" +  state.getValue() + "-" + country.getValue() + "-" + postalCode.getValue(); 
         	try {
-				newAcc = new Account(email.getValue(), password.getValue(), firstName.getValue(), lastName.getValue(), street.getValue(), phone.getValue());
+				newAcc = new Account(email.getValue(), password.getValue(), firstName.getValue(), lastName.getValue(), fin, phone.getValue());
 			} catch (Exception e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
@@ -69,12 +69,9 @@ public class SignUpView extends Div{
             	
 				newAcc.storeAccount(Application.setPGM("user1", "pass"), newAcc);
 				Notification.show("Account created successfully");
-				
+				UI.getCurrent().navigate("Login");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
-				test = firstName.getValue();
-				String test2 = email.getValue();
-				//Notification.show(test + " " + test2);
 				Notification.show("Error creating Account");
 				e1.printStackTrace();
 			}

@@ -11,6 +11,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.vaadin.flow.component.notification.Notification;
+
 public class SQLConnect implements Serializable{
 	
 	/**
@@ -55,33 +57,35 @@ public class SQLConnect implements Serializable{
 		statement = connect.createStatement();
 		resultSet = statement.executeQuery("select pass from grocerystore.account where email=\"" + email+"\"");
 		
-		if(pass == Application.decrypt(resultSet.getString("pass"))) {
+		while(resultSet.next()) {
+		if(pass.equals(Application.decrypt(resultSet.getString("pass")))) {
 				
 			return true;
 		}
-		
-		
+			
+		}
 		return false;
 	}
 	
 	
 	
-	public Account getAcc(String inEmail) throws Exception {
+	
+	public  Account getAcc(String inEmail) throws Exception {
 		try {
 			statement = connect.createStatement();
-			resultSet = statement.executeQuery("select * from grocerystore.account where email=" + inEmail);
-			if(resultSet.getFetchSize() != 1)
-				return null;
+			resultSet = statement.executeQuery("select * from grocerystore.account where email=\"" + inEmail+"\"");
+			while(resultSet.next()) {
 			Account ret = new Account(resultSet.getString("email"),
 									  Application.decrypt(resultSet.getString("pass")),
 									  resultSet.getString("first"), resultSet.getString("last"), resultSet.getString("address"), resultSet.getString("phone"));
 			return ret;
-
+			}
 		}
 		catch (Exception e) 
 	       {
 	           throw e;
 	       }
+		return null;
 	}
 	
 	
@@ -121,7 +125,7 @@ public class SQLConnect implements Serializable{
 	}
 	
 	
-	
+	//add changes for email clause as we did in 
 	public boolean updatePass(Account item, String pass, String old) throws SQLException {
 		if (this.login(item.getEmail(), old)) {
 			statement = connect.createStatement();
@@ -137,10 +141,12 @@ public class SQLConnect implements Serializable{
 	public double getItem(Item item, int quant) throws SQLException { //get price for checkout
 		statement = connect.createStatement();
 		resultSet = statement.executeQuery("select * from grocerystore.item where itemId=" + item.getId());
-		if(resultSet.getInt("quantity") >= quant) {
-			double ret = resultSet.getDouble("price") * quant;
-			statement.executeUpdate("update groceryStore.item set quantity=" + (resultSet.getInt("quantity")-quant));
-			return ret;
+		while(resultSet.next()) {
+			if(resultSet.getInt("quantity") >= quant) {
+				double ret = resultSet.getDouble("price") * quant;
+				statement.executeUpdate("update groceryStore.item set quantity=" + (resultSet.getInt("quantity")-quant));
+				return ret;
+			}
 		}
 		return -1;
 	}

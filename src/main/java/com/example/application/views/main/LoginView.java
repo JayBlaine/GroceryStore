@@ -2,7 +2,9 @@ package com.example.application.views.main;
 
 import java.sql.SQLException;
 
+import com.example.application.Account;
 import com.example.application.Application;
+import com.example.application.data.entity.SamplePerson;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.UI;
@@ -31,8 +33,8 @@ public class LoginView extends Div{
 	private HtmlComponent br = new HtmlComponent("br");
 	private TextField email = new TextField("Email");
 	private PasswordField pass = new PasswordField("Password");
-	public static boolean loggedIn = false;
-	 
+	public static boolean loggedIn;
+	public static Account user;
 	public LoginView (){
 		addClassName("login-form-view");
 		
@@ -40,18 +42,29 @@ public class LoginView extends Div{
         add(createFormLayout());
 	    add(
 			new Button("Login", event ->{
-				try {
-					Application.setPGM("user1", "pass");
-					Application.pgm.login(email.getValue(), pass.getValue());
-					 Notification.show("Successfully logged in");
-					 LoginView.setBoo(true);
-					UI.getCurrent().navigate("Home-Page");
-				} catch (Exception e) {
+				if(loggedIn) {
+					Notification.show("Already Logged In");
+				}else {
+					try {
+						Application.setPGM("user1", "pass");
+						Application.pgm.login(email.getValue(), pass.getValue());
+						user = Application.pgm.getAcc(email.getValue());
+						Notification.show("Successfully logged in");
+						LoginView.setBoo(true);
+						UI.getCurrent().navigate("Home-Page");
+					} catch (Exception e) {
 					// TODO Auto-generated catch block
-					 Notification.show("Login error");
-					e.printStackTrace();
+						Notification.show("Login error");
+						e.printStackTrace();
+					}
 				}
+				}),
+			br,
+			new Button("Clear", event -> {
+				email.setValue(" ");
+				pass.setValue(" ");
 			}),
+			
 			br,
 			new Button("Sign Up", event ->{
 				UI.getCurrent().navigate("SignUp");
@@ -61,7 +74,8 @@ public class LoginView extends Div{
 	    }
 
 	
-
+	
+	
 	private Component createFormLayout() {
 		// TODO Auto-generated method stub
 		FormLayout formLayout = new FormLayout();
