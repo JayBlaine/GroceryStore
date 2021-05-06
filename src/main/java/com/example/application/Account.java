@@ -1,6 +1,7 @@
 package com.example.application;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ public class Account {
 	private String last;
 	private String address;
 	private String phone;
-	private HashMap <Item, Integer> cart = new HashMap<Item, Integer>();
+	private ArrayList<Item> cart = new ArrayList<>();
 	//private SQLConnect conn;
 	
 	public Account(String email, String pass, String first, String last, String add, String phone)  {
@@ -30,34 +31,35 @@ public class Account {
 	}
 	
 	public void addToCart(Item item, Integer amt) {
-		if(!cart.containsKey(item))
-			this.cart.put(item, amt);
-		else
-			this.cart.put(item, amt);
-		for (Entry<Item, Integer> entry : this.cart.entrySet()) {
-			System.out.println(entry.getKey().getName());
+		if(!cart.contains(item)) {
+			this.cart.add(item);
+			item.setQuant(amt);
+		}else {
+			Integer index = cart.indexOf(item);
+			cart.get(index).setQuant(amt);
 		}
 	}
 	
 	public void removeFromCart(Item item) {
-		this.cart.put(item, this.cart.get(item)-1);
-		if(this.cart.get(item) < 1) //Removed last of that item
+		if(this.cart.contains(item))
 			this.cart.remove(item);
 	}
 	
 	public double checkout(SQLConnect pgm) throws SQLException {
 		double cost = 0.0;
-		for (Entry<Item, Integer> entry : this.cart.entrySet()) {
-		    Item item = entry.getKey();
-		    int quant = entry.getValue();
-		    double retVal = pgm.getItem(item, quant);
-		    if(retVal < 0)
-		    	return -1.0;
-		    else
-		    	cost+=retVal;
-		    
+		try {
+			Application.setPGM("user1", "pass");
+		}catch(Exception e) {
+			
+		}
+		for(Item i:cart) {
+			cost+=Application.pgm.getItem(i,  i.getQuant());
 		}
 		return cost;
+	}
+	
+	public ArrayList<Item> getCart(){
+		return this.cart;
 	}
 
 	

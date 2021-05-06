@@ -8,6 +8,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -44,7 +45,8 @@ public class PaymentFormView extends Div {
     public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
     private Button cancel = new Button("Cancel");
     private Button submit = new Button("Submit");
-
+    private Label total = new Label();
+    
     public PaymentFormView() {
         addClassName("payment-form-view");
 
@@ -59,17 +61,7 @@ public class PaymentFormView extends Div {
 				e1.printStackTrace();
 			}
 			grid.setItems(Application.pgm.getAllItems());
-			grid.addColumn(new ComponentRenderer<>(item ->{
-				NumberField amount = new NumberField();
-				amount.addValueChangeListener(event ->{
-					if((amount.getValue() == 0)) {
-						user.removeFromCart(item);					
-					}
-				});
-				amount.setValue(0.0);
-				
-				return amount;
-			})).setHeader("Quantity");
+			grid.addColumn(Item::getQuant).setHeader("Quantity");
 			grid.addColumn(Item::getName).setHeader("Name");
 			grid.addColumn(Item::getPrice).setHeader("Price");
 			grid.addColumn(Item::getDesc).setHeader("Description");
@@ -78,6 +70,8 @@ public class PaymentFormView extends Div {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        total.setText("$");
+        add(grid);
         
         add(createFormLayout());
         add(createButtonLayout());
