@@ -42,7 +42,11 @@ import com.vaadin.flow.component.html.H1;
 @CssImport("./views/homepage/home-page-view.css")
 public class HomePageView extends HorizontalLayout {
 
-    private TextField search;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private TextField search;
     private Button Search;
 	private Component Button;
 	public Component Text;
@@ -52,6 +56,7 @@ public class HomePageView extends HorizontalLayout {
 	public HashMap <Item, Integer> quantity = new HashMap<Item, Integer>();
 	//public TextField input = new TextField("Enter item amount");
 	HtmlComponent br = new HtmlComponent("br");
+	//Dummy account to save item selection for user
 	public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
 
     public HomePageView() {
@@ -63,13 +68,7 @@ public class HomePageView extends HorizontalLayout {
  			e2.printStackTrace();
  		}
         addClassName("home-page-view");
-        search = new TextField("Search Item");
-        Search = new Button("Search");
-        add(search, Search);
-        setVerticalComponentAlignment(Alignment.END, search, Search);
-        Search.addClickListener(e -> {
-            Notification.show( search.getValue() + " not found");
-        });
+       
         add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");})
         	
         );
@@ -91,6 +90,9 @@ public class HomePageView extends HorizontalLayout {
 						System.out.println("Adding to cart");
 						user.addToCart(item, temp2);		
 					}
+					/*else if((amount.getValue() == 0)) {
+						user.removeFromCart(item);
+					}*/
 				});
 				amount.setValue(0.0);
 				
@@ -113,20 +115,31 @@ public class HomePageView extends HorizontalLayout {
        });
        
        
-       //if(LoginView.loggedIn) {
-       add(grid);
+       if(LoginView.loggedIn) {
+    	   add(grid);
        
-       add(new Button("Checkout", event ->{
-    	   temp = selectionModel.getSelectedItems();
-    	  for(Item i: temp) {
-    		  
-    		  System.out.println(i.getQuant());
-    		  
-    	  }
+    	   add(new Button("Checkout", event ->{
+    	   //set pgm again
+    	   try {
+			Application.setPGM("user1", "pass");
+    	   } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    	   }
+    	   //call checkout
+    	   try {
+			user.checkout(Application.pgm);
+    	   } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    	   }
+    	   UI.getCurrent().navigate("payment-form");
+    	   }
     	  
     	   
-       }));
-      // }
-    }
+       ));
+       
 
+    }
+   }
 }

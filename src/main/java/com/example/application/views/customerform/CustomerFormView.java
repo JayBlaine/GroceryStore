@@ -28,7 +28,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 //import com.vaadin.flow.data.renderer.TemplateRenderer;
 
 @Route(value = "customer-form", layout = MainView.class)
-@PageTitle("Customer Form")
+@PageTitle("Account")
 @CssImport("./views/customerform/customer-form-view.css")
 public class CustomerFormView extends Div {
 
@@ -64,6 +64,7 @@ public class CustomerFormView extends Div {
 
         cancel.addClickListener(e -> clearForm());
         save.addClickListener(e -> {
+        	//add change password func
             personService.update(binder.getBean());
             Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
             clearForm();

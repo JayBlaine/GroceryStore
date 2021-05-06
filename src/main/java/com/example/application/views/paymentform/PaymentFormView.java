@@ -5,15 +5,24 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
+
+import java.sql.SQLException;
+
+import com.example.application.Account;
+import com.example.application.Application;
+import com.example.application.Item;
 import com.example.application.views.main.MainView;
 import com.vaadin.flow.component.dependency.CssImport;
 
@@ -32,7 +41,7 @@ public class PaymentFormView extends Div {
     private Select<Integer> year = new Select<>();
     private ExpirationDateField expiration = new ExpirationDateField("Expiration date", month, year);
     private PasswordField csc = new PasswordField("CSC");
-
+    public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
     private Button cancel = new Button("Cancel");
     private Button submit = new Button("Submit");
 
@@ -40,6 +49,36 @@ public class PaymentFormView extends Div {
         addClassName("payment-form-view");
 
         add(createTitle());
+ Grid<Item> grid = new Grid<>();
+        
+        try {
+        	try {
+				Application.setPGM("user1", "pass");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			grid.setItems(Application.pgm.getAllItems());
+			grid.addColumn(new ComponentRenderer<>(item ->{
+				NumberField amount = new NumberField();
+				amount.addValueChangeListener(event ->{
+					if((amount.getValue() == 0)) {
+						user.removeFromCart(item);					
+					}
+				});
+				amount.setValue(0.0);
+				
+				return amount;
+			})).setHeader("Quantity");
+			grid.addColumn(Item::getName).setHeader("Name");
+			grid.addColumn(Item::getPrice).setHeader("Price");
+			grid.addColumn(Item::getDesc).setHeader("Description");
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
         add(createFormLayout());
         add(createButtonLayout());
 
@@ -49,6 +88,9 @@ public class PaymentFormView extends Div {
         submit.addClickListener(e -> {
             Notification.show("Not implemented");
         });
+        
+        
+    
     }
 
     private Component createTitle() {
