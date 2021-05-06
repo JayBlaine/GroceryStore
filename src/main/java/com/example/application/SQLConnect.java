@@ -154,6 +154,17 @@ public class SQLConnect implements Serializable{
 		return -1;
 	}
 	
+	public boolean enoughItem(Item item, int quant) throws SQLException {
+		statement = connect.createStatement();
+		resultSet = statement.executeQuery("select * from grocerystore.item where itemId=" + item.getId());
+		while(resultSet.next()) {
+			if(resultSet.getInt("quantity") >= quant) {
+				return true; }
+			else { return false; }
+		}
+		return false;
+	}
+	
 	public List<Item> getAllItems() throws SQLException {
 		statement = connect.createStatement();
 		resultSet = statement.executeQuery("select * from grocerystore.item");
