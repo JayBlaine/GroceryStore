@@ -147,7 +147,7 @@ public class SQLConnect implements Serializable{
 		while(resultSet.next()) {
 			if(resultSet.getInt("quantity") >= quant) {
 				double ret = resultSet.getDouble("price") * quant;
-				statement.executeUpdate("update grocerystore.item set quantity=" + (resultSet.getInt("quantity")-quant));
+				statement.executeUpdate("update grocerystore.item set quantity=" + (resultSet.getInt("quantity")-quant) + " where itemId=" + item.getId());
 				return ret;
 			}
 		}
