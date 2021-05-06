@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import com.example.application.Account;
 import com.example.application.Application;
 import com.example.application.Item;
+import com.example.application.views.homepage.HomePageView;
 import com.example.application.views.main.MainView;
 import com.vaadin.flow.component.dependency.CssImport;
 
@@ -54,25 +55,30 @@ public class PaymentFormView extends Div {
  Grid<Item> grid = new Grid<>();
         
         try {
-        	try {
 				Application.setPGM("user1", "pass");
-			} catch (Exception e1) {
+		} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
-			grid.setItems(Application.pgm.getAllItems());
+		}
+			grid.setItems(HomePageView.user.getCart());
 			grid.addColumn(Item::getQuant).setHeader("Quantity");
 			grid.addColumn(Item::getName).setHeader("Name");
 			grid.addColumn(Item::getPrice).setHeader("Price");
-			grid.addColumn(Item::getDesc).setHeader("Description");
 			
+		try {
+			Application.setPGM("user1", "pass");
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}	
+		try {
+			total.setText("$" + Double.toString(HomePageView.user.checkout(Application.pgm)));
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        total.setText("$");
         add(grid);
-        
+        add(total);
         add(createFormLayout());
         add(createButtonLayout());
 

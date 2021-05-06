@@ -41,7 +41,7 @@ public static SQLConnect pgm;
 		for (int i=0;i<pass.length();i++)  
         {  
 			//if(i % 4 == 0)
-			//	continue;
+				//continue;
             char ch=Character.toLowerCase(pass.charAt(i));  
             switch (ch)  
             {  

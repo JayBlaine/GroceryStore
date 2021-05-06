@@ -58,7 +58,8 @@ public class HomePageView extends HorizontalLayout {
 	HtmlComponent br = new HtmlComponent("br");
 	//Dummy account to save item selection for user
 	public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
-
+	
+	
     public HomePageView() {
     	
     	 try {
@@ -69,9 +70,9 @@ public class HomePageView extends HorizontalLayout {
  		}
         addClassName("home-page-view");
        
-        add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");})
-        	
-        );
+        add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");}));
+        if(LoginView.loggedIn)
+        	add(new Button("Logout", event->{LoginView.loggedIn = false; UI.getCurrent().navigate("Home-Page");}));
         //////////////////////////////////////////////////////////////////////////////
         //Grid
         ///////////////////////////////////////////////////////////////////////////////
@@ -126,13 +127,7 @@ public class HomePageView extends HorizontalLayout {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
     	   }
-    	   //call checkout
-    	   try {
-			user.checkout(Application.pgm);
-    	   } catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-    	   }
+    	   
     	   UI.getCurrent().navigate("payment-form");
     	   }
     	  
