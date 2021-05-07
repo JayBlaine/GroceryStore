@@ -56,7 +56,7 @@ public class SignUpView extends Div{
 
         cancel.addClickListener(e -> {
         clearForm(); 
-        UI.getCurrent().navigate("Login");});
+        UI.getCurrent().navigate("Home-Page");});
         
         save.addClickListener(e -> {
         	if(email.isEmpty()) {

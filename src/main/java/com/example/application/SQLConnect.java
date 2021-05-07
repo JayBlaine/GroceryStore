@@ -132,8 +132,8 @@ public class SQLConnect implements Serializable{
 	public boolean updatePass(Account item, String pass, String old) throws SQLException {
 		if (this.login(item.getEmail(), old)) {
 			statement = connect.createStatement();
-			statement.executeUpdate("update grocerystore.account set password = " + Application.encrypt(pass)
-			+ " where email = " + item.getEmail());
+			statement.executeUpdate("update grocerystore.account set pass = " + "\'"+Application.encrypt(pass)+"\'"
+			+ " where email = \"" + item.getEmail()+"\"");
 			return true;
 		}
 		return false;

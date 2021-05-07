@@ -1,6 +1,8 @@
 package com.example.application.views.paymentform;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
@@ -8,6 +10,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,6 +23,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Random;
 
 import com.example.application.Account;
 import com.example.application.Application;
@@ -42,12 +47,13 @@ public class PaymentFormView extends Div {
     private Select<Integer> month = new Select<>();
     private Select<Integer> year = new Select<>();
     private ExpirationDateField expiration = new ExpirationDateField("Expiration date", month, year);
-    private PasswordField csc = new PasswordField("CSC");
+    private PasswordField csc = new PasswordField("CSV");
     public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
     private Button cancel = new Button("Cancel");
     private Button submit = new Button("Submit");
     private Label total = new Label();
-    
+    private static DecimalFormat df2 = new DecimalFormat("0.00");
+    public double cost = 0.0;
     public PaymentFormView() {
         addClassName("payment-form-view");
 
@@ -60,33 +66,51 @@ public class PaymentFormView extends Div {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 		}
-			grid.setItems(HomePageView.user.getCart());
-			grid.addColumn(Item::getQuant).setHeader("Quantity");
-			grid.addColumn(Item::getName).setHeader("Name");
-			grid.addColumn(Item::getPrice).setHeader("Price");
+        grid.addColumn(new ComponentRenderer<>(item -> {
+		    Image image = new Image(item.getPic(),
+		            item.getName());
+		    image.setWidth(100, Unit.PIXELS);
+		    image.setHeight(100, Unit.PIXELS);
+		    return image;
+		})).setHeader("Image");
+		grid.setItems(HomePageView.user.getCart());
+		grid.addColumn(Item::getQuant).setHeader("Quantity");
+		grid.addColumn(Item::getName).setHeader("Name");
+		grid.addColumn(Item::getPriceString).setHeader("Price");
 			
-		try {
-			Application.setPGM("user1", "pass");
-		} catch (Exception e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}	
-		try {
-			total.setText("$" + Double.toString(HomePageView.user.checkout(Application.pgm)));
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		for(Item i : HomePageView.user.getCart()) {
+			cost += (i.getPrice() * i.getQuant());
 		}
+		df2.format(cost);
+		Math.round(cost);	
+		total.setText("Total: $" + Double.toString(cost));
+
         add(grid);
         add(total);
         add(createFormLayout());
         add(createButtonLayout());
 
         cancel.addClickListener(e -> {
-            Notification.show("Not implemented");
+        	UI.getCurrent().navigate("Home-Page");
         });
         submit.addClickListener(e -> {
-            Notification.show("Not implemented");
+        	try {
+    			Application.setPGM("user1", "pass");
+    		} catch (Exception e2) {
+    			// TODO Auto-generated catch block
+    			e2.printStackTrace();
+    		}	
+        	try {
+				HomePageView.user.checkout(Application.pgm);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	Random rand = new Random();
+        	HomePageView.user.clearCart();
+            Notification.show("Receipt for Order"+ Integer.toString(Math.abs(rand.nextInt()) %10000) +"sent to email");
+            System.out.println(Integer.toString(HomePageView.user.getCartSize()));
+            UI.getCurrent().navigate("Home-Page");
         });
         
         

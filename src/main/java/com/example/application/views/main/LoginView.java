@@ -79,16 +79,6 @@ public class LoginView extends Div{
 			new Button("Clear", event -> {
 				email.setValue("");
 				pass.setValue("");
-			}),
-			
-			br,
-			new Button("Sign Up", event ->{
-				UI.getCurrent().navigate("SignUp");
-			}),
-			
-			new Button("LogOut", event ->{
-				loggedIn = false;
-				UI.getCurrent().navigate("Home-Page");
 			})
 			);
      

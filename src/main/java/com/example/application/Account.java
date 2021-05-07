@@ -30,19 +30,30 @@ public class Account {
 		
 	}
 	
-	public void addToCart(Item item, Integer amt) {
+	/*public void setCart(ArrayList<Item> newcart) {
+		//this.cart = newcart;
+		this.cart.clear();
+		this.cart.addAll(0, newcart);
+	}*/
+	
+	public void addToCart(Item item, int amt) {
 		if(!cart.contains(item)) {
-			this.cart.add(item);
 			item.setQuant(amt);
+			this.cart.add(item);
+			System.out.println(this.cart.get(this.cart.size()-1).getName());
 		}else {
 			Integer index = cart.indexOf(item);
 			cart.get(index).setQuant(amt);
 		}
+		
 	}
 	
-	public void removeFromCart(Item item) {
-		if(this.cart.contains(item))
+	public boolean removeFromCart(Item item) {
+		if(this.cart.contains(item)) {
 			this.cart.remove(item);
+			return true;
+		}
+			return false;
 	}
 	
 	public double checkout(SQLConnect pgm) throws SQLException {
@@ -72,6 +83,12 @@ public class Account {
 		//TODO: Update value
 	}
 	
+	public void clearCart() {
+		this.cart.clear();
+	}
+	public int getCartSize() {
+		return this.cart.size();
+	}
 	
 	
 	public String getEmail() {return this.email; }

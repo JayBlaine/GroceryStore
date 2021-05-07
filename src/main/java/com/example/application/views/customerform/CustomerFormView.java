@@ -1,5 +1,7 @@
 package com.example.application.views.customerform;
 
+import java.sql.SQLException;
+
 import com.example.application.Account;
 import com.example.application.Application;
 import com.example.application.SQLConnect;
@@ -63,20 +65,39 @@ public class CustomerFormView extends Div {
         clearForm();
 
         cancel.addClickListener(e -> clearForm());
+        
         save.addClickListener(e -> {
-        	//add change password func
-            personService.update(binder.getBean());
-            Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
-            clearForm();
+            if(!LoginView.user.getpass().equals(password.getValue())){
+            	try {
+					Application.setPGM("user1", "pass");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	try {
+					Application.pgm.updatePass(LoginView.user, password.getValue(), LoginView.user.getpass());
+					Notification.show("Password changed successfully");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+
         });
         if(LoginView.loggedIn) {
-        	 //use = Application.pgm.getAcc(email);
         	 firstName.setValue(LoginView.user.getFirst());
         	 lastName.setValue(LoginView.user.getLast());
         	 password.setValue(LoginView.user.getpass());
         	 email.setValue(LoginView.user.getEmail());
         	 phone.setValue(LoginView.user.getPhone());
-        	 
+        	 confirm.setValue(LoginView.user.getpass());
+        	 String loop = LoginView.user.getAdd();
+        	 String temp[] = loop.split("-");
+        	 street.setValue(temp[0]);
+        	 city.setValue(temp[1]);
+        	 state.setValue(temp[2]);
+        	 country.setValue(temp[3]);
+        	 postalCode.setValue(temp[4]);
         }
     }
 

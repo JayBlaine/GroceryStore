@@ -2,6 +2,7 @@ package com.example.application.views.homepage;
 
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -35,6 +36,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 
 @Route(value = "Home-Page", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
@@ -69,8 +71,10 @@ public class HomePageView extends HorizontalLayout {
  			e2.printStackTrace();
  		}
         addClassName("home-page-view");
-       
-        add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");}));
+        if(LoginView.loggedIn == false) {
+        	add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");}));
+        	add(new Button("Sign Up", event ->{UI.getCurrent().navigate("SignUp");}));
+        }
         if(LoginView.loggedIn)
         	add(new Button("Logout", event->{LoginView.loggedIn = false; UI.getCurrent().navigate("Home-Page");}));
         //////////////////////////////////////////////////////////////////////////////
@@ -80,58 +84,76 @@ public class HomePageView extends HorizontalLayout {
         
         try {
 			grid.setItems(Application.pgm.getAllItems());
+			grid.addColumn(new ComponentRenderer<>(item -> {
+			    Image image = new Image(item.getPic(),
+			            item.getName());
+			    image.setWidth(100, Unit.PIXELS);
+			    image.setHeight(100, Unit.PIXELS);
+			    return image;
+			})).setHeader("Image");
 			grid.addColumn(new ComponentRenderer<>(item ->{
 				NumberField amount = new NumberField();
-				amount.addValueChangeListener(event ->{
-					//Item.setQuant(event.getValue());
+				amount.addValueChangeListener(event ->{	
 					if((amount).getValue() > 0) {
-						double temp;
-						temp = (double)amount.getValue();
-						Integer temp2 = (int)temp;
-						System.out.println("Adding to cart");
-						user.addToCart(item, temp2);		
-					}
-					/*else if((amount.getValue() == 0)) {
-						user.removeFromCart(item);
-					}*/
+							double temp;
+							temp = (double)amount.getValue();
+							Integer temp2 = (int)temp;
+							//System.out.println("Adding to cart");
+							user.addToCart(item, temp2);
+							Notification.show("Adding " + amount.getValue() + " of " + item.getName() + " to cart");
+					}else
+						if(user.removeFromCart(item))
+							Notification.show("Removed " + item.getName() + " from cart");
 				});
-				amount.setValue(0.0);
-				
+				Double val = (double) item.getQuant();
+				amount.setValue(val);
 				return amount;
 			})).setHeader("Quantity");
 			grid.addColumn(Item::getName).setHeader("Name");
-			grid.addColumn(Item::getPrice).setHeader("Price");
+			grid.addColumn(Item::getPriceString).setHeader("Price");
 			grid.addColumn(Item::getDesc).setHeader("Description");
 			
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-        
-        GridMultiSelectionModel<Item> selectionModel = (GridMultiSelectionModel<Item>) grid.setSelectionMode(SelectionMode.MULTI);
-      //selectionModel.selectAll();
-       selectionModel.addMultiSelectionListener(event -> {
-		message.setText(String.format("%s item add, % item removed", event.getAddedSelection().size(), event.getRemovedSelection().size()));
-    	  
-       });
-       
+		}      
        
        if(LoginView.loggedIn) {
     	   add(grid);
        
     	   add(new Button("Checkout", event ->{
     	   //set pgm again
+    		  
     	   try {
 			Application.setPGM("user1", "pass");
     	   } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
     	   }
+    	   ArrayList<Item> cur = user.getCart();
+    	   for(Item i: cur) {
+    		   //setup pgm
+    		   try {
+				Application.setPGM("user1", "pass");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		   //check if we have enough items in inventory
+    		   try {
+    		   
+				if(Application.pgm.enoughItem(i, i.getQuant()) == false) {
+					Notification.show("Error: not enough inventory for " + i.getName());
+					user.removeFromCart(i);
+				}
+			} catch (SQLException e) {
+				
+			}
+    		   
+    	   }
     	   
     	   UI.getCurrent().navigate("payment-form");
-    	   }
-    	  
-    	   
+    	   }	   
        ));
        
 
