@@ -89,6 +89,7 @@ public class CustomerFormView extends Div {
         	 lastName.setValue(LoginView.user.getLast());
         	 password.setValue(LoginView.user.getpass());
         	 email.setValue(LoginView.user.getEmail());
+        	 email.setEnabled(false);
         	 phone.setValue(LoginView.user.getPhone());
         	 confirm.setValue(LoginView.user.getpass());
         	 String loop = LoginView.user.getAdd();

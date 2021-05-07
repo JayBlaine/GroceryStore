@@ -35,7 +35,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@PWA(name = "GroceryStore", shortName = "GroceryStore", enableInstallPrompt = false)
+@PWA(name = "GroceryStore", shortName = "GroceryStore")
 @JsModule("./styles/shared-styles.js")
 @CssImport("./views/main/main-view.css")
 public class MainView extends AppLayout {
