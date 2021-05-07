@@ -136,6 +136,10 @@ public class HomePageView extends HorizontalLayout {
     	   add(grid);
     	   Dialog dialog = new Dialog();
     	   add(new Button("Checkout", event ->{
+    		   if(user.getCart().size() == 0) {
+    			   Notification.show("Nothing in cart");
+    			   
+    		   }else {
     		   Boolean erro = false;
     		   dialog.setCloseOnEsc(false);
         	   dialog.setCloseOnOutsideClick(false);
@@ -191,10 +195,11 @@ public class HomePageView extends HorizontalLayout {
     		   if(erro) {
     			   dialog.close();
     		   }else {
-    			   //dialog.add(new );
+    			   dialog.add(new Term("Once you leave this page you cannot alter the cart. Proceed to Payment Page?"));
     			   dialog.add(new Div( confirmButton, cancelButton));
     			   dialog.open();
     		   }
+    	    }
     	   }
 
        ));
