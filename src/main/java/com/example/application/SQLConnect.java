@@ -32,7 +32,7 @@ public class SQLConnect implements Serializable{
 	public static final int ER_DUP_ENTRY_WITH_KEY_NAME = 1586;
 	ZoneId zid = ZoneId.of("America/Chicago");
 	LocalDate date = LocalDate.now(zid);
-	//boolean for customer view
+	//boolean for customer view 
 	
 
 	public SQLConnect(String user, String password) throws Exception
@@ -139,6 +139,13 @@ public class SQLConnect implements Serializable{
 		return false;
 	}
 	
+	public void updateAcc(Account acc) throws SQLException {
+		statement = connect.createStatement();
+		statement.executeUpdate("update grocerystore.account set first=\'" + acc.getFirst() +
+								"\', last =\'" + acc.getLast() +
+								"\', address =\'" + acc.getAdd() +
+								"\', phone =\'" + acc.getPhone() + "\'");
+	}
 	
 	
 	public double getItem(Item item, int quant) throws SQLException { //get price for checkout
