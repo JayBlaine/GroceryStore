@@ -134,59 +134,69 @@ public class HomePageView extends HorizontalLayout {
        
        if(LoginView.loggedIn) {
     	   add(grid);
-       
-    	   add(new Button("Checkout", event ->{
-    	   //set pgm again 
-    	   try {
-			Application.setPGM("user1", "pass");
-    	   } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-    	   }
-    	   
-    	   ArrayList<Item> cur = user.getCart();
-    	   
-    	   for(Item i: cur) {
-    		   //setup pgm
-    		   try {
-				Application.setPGM("user1", "pass");
-			   } catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			   }
-    		   //check if we have enough items in inventory
-    		   try {
-    		   
-				if(Application.pgm.enoughItem(i, i.getQuant()) == false) {
-					Notification.show("Error: not enough inventory for " + i.getName());
-					user.removeFromCart(i);
-				}
-			   } catch (SQLException e) {
-				
-			   }
-    		   
-    	   }
-    	  
     	   Dialog dialog = new Dialog();
-    	   dialog.add(new Term("Once you leave this page you cannot alter cart. Proceed to PaymentPage?"));
-    	   dialog.setCloseOnEsc(false);
-    	   dialog.setCloseOnOutsideClick(false);
-    	   Span message = new Span();
+    	   add(new Button("Checkout", event ->{
+    		   Boolean erro = false;
+    		   dialog.setCloseOnEsc(false);
+        	   dialog.setCloseOnOutsideClick(false);
+        	   Span message = new Span();
+        	   Button confirmButton = new Button("Confirm", e -> {
+        	       dialog.removeAll();
+        		   dialog.close();
+        	       UI.getCurrent().navigate("payment-form");
+        	   });
+        	   Button cancelButton = new Button("Cancel", e-> {
+        		   dialog.removeAll();
+        	       dialog.close();
+        	   });
+        	   // Cancel action on ESC press
+        	   Shortcuts.addShortcutListener(dialog, () -> {
+        		   dialog.removeAll();
+        	       message.setText("Cancelled...");
+        	       dialog.close();
+        	   }, Key.ESCAPE);
+        	   
+        	   
+    	   //set pgm again 
+    		   try {
+    			   Application.setPGM("user1", "pass");
+    		   } catch (Exception e) {
+			// TODO Auto-generated catch block
+    			   e.printStackTrace();
+    		   }
+    	   
+    		   ArrayList<Item> cur = user.getCart();
+    	   //check if we have enough inventory
+    		   for(Item i: cur) {
+    			   //setup pgm
+    			   try {
+    				   Application.setPGM("user1", "pass");
+    			   } catch (Exception e) {
+    				   // TODO Auto-generated catch block
+    				   e.printStackTrace();
+    			   }
+    			   try {
+    		   
+    				   if(Application.pgm.enoughItem(i, i.getQuant()) == false) {
+    					   Notification.show("Error: not enough inventory for " + i.getName());
+    					   user.removeFromCart(i);
+    					   erro = true;
+    				   }
+    			   } catch (SQLException e) {
+				
+    			   }
+    		   
+    		   }
+    		   
+    		   if(erro) {
+    			   dialog.close();
+    		   }else {
+    			   //dialog.add(new );
+    			   dialog.add(new Div( confirmButton, cancelButton));
+    			   dialog.open();
+    		   }
+    	   }
 
-    	   Button confirmButton = new Button("Confirm", e -> {
-    	       dialog.close();
-    	       UI.getCurrent().navigate("payment-form");
-    	   });
-    	   Button cancelButton = new Button("Cancel", e-> {
-    	       dialog.close();
-    	   });
-    	   // Cancel action on ESC press
-    	   Shortcuts.addShortcutListener(dialog, () -> {
-    	       message.setText("Cancelled...");
-    	       dialog.close();
-    	   }, Key.ESCAPE);
-    	   dialog.add(new Div( confirmButton, cancelButton));
-    	   }	   
        ));
        
 
