@@ -40,7 +40,7 @@ public class CustomerFormView extends Div {
 	private static final long serialVersionUID = 1L;
 	private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
-    private TextField password = new TextField("Password");
+    private TextField password = new TextField("Change Password");
     private TextField confirm = new TextField("Confirm Password");
     private TextField email = new TextField("Email address");
     private TextField phone = new TextField("Phone number");

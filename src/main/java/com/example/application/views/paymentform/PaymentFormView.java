@@ -21,6 +21,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.component.HtmlComponent;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -56,10 +57,10 @@ public class PaymentFormView extends Div {
     public double cost = 0.0;
     public PaymentFormView() {
         addClassName("payment-form-view");
-
+        
         add(createTitle());
  Grid<Item> grid = new Grid<>();
-        
+        Notification.show("Values cannot be changed on this page");
         try {
 				Application.setPGM("user1", "pass");
 		} catch (Exception e1) {
@@ -89,8 +90,15 @@ public class PaymentFormView extends Div {
         add(total);
         add(createFormLayout());
         add(createButtonLayout());
-
+        add(new Label("Cancel button will clear cart and redirect to store home."));
+        
         cancel.addClickListener(e -> {
+        	cardholderName.setValue("");
+        	month.setValue(null);
+        	year.setValue(null);
+        	csc.setValue("");
+        	cardNumber.setValue("");
+        	HomePageView.user.clearCart();
         	UI.getCurrent().navigate("Home-Page");
         });
         submit.addClickListener(e -> {
@@ -108,7 +116,7 @@ public class PaymentFormView extends Div {
 			}
         	Random rand = new Random();
         	HomePageView.user.clearCart();
-            Notification.show("Receipt for Order"+ Integer.toString(Math.abs(rand.nextInt()) %10000) +"sent to email");
+            Notification.show("Receipt for Order "+ Integer.toString(Math.abs(rand.nextInt()) %10000) +" sent to email");
             System.out.println(Integer.toString(HomePageView.user.getCartSize()));
             UI.getCurrent().navigate("Home-Page");
         });

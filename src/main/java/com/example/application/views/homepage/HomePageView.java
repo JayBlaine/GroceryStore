@@ -1,6 +1,8 @@
 package com.example.application.views.homepage;
 
 import com.vaadin.flow.component.HtmlComponent;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -15,7 +17,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import java.awt.Component;
 import java.awt.GridLayout;
-
 import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.lang.*;
-
 import com.example.application.Account;
 import com.example.application.Application;
 import com.example.application.Item;
@@ -35,8 +35,15 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.DescriptionList.Term;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.dialog.*;
+
+
 
 @Route(value = "Home-Page", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
@@ -58,6 +65,9 @@ public class HomePageView extends HorizontalLayout {
 	public HashMap <Item, Integer> quantity = new HashMap<Item, Integer>();
 	//public TextField input = new TextField("Enter item amount");
 	HtmlComponent br = new HtmlComponent("br");
+	Dialog dialog = new Dialog();
+	Button confirmButton = new Button("Confirm");
+	Button cancelButton = new Button("Cancel");
 	//Dummy account to save item selection for user
 	public static Account user = new Account("pat", "patter", "pa", "p", "patricia", "i");
 	
@@ -72,8 +82,12 @@ public class HomePageView extends HorizontalLayout {
  		}
         addClassName("home-page-view");
         if(LoginView.loggedIn == false) {
+        	add(new Label("Welcome, to begin shopping login or create an account"));
+        	add(br);
+        	add(br);
         	add(new Button("Login", event ->{ UI.getCurrent().navigate("Login");}));
         	add(new Button("Sign Up", event ->{UI.getCurrent().navigate("SignUp");}));
+        	
         }
         if(LoginView.loggedIn)
         	add(new Button("Logout", event->{LoginView.loggedIn = false; UI.getCurrent().navigate("Home-Page");}));
@@ -122,23 +136,24 @@ public class HomePageView extends HorizontalLayout {
     	   add(grid);
        
     	   add(new Button("Checkout", event ->{
-    	   //set pgm again
-    		  
+    	   //set pgm again 
     	   try {
 			Application.setPGM("user1", "pass");
     	   } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
     	   }
+    	   
     	   ArrayList<Item> cur = user.getCart();
+    	   
     	   for(Item i: cur) {
     		   //setup pgm
     		   try {
 				Application.setPGM("user1", "pass");
-			} catch (Exception e) {
+			   } catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			   }
     		   //check if we have enough items in inventory
     		   try {
     		   
@@ -146,13 +161,31 @@ public class HomePageView extends HorizontalLayout {
 					Notification.show("Error: not enough inventory for " + i.getName());
 					user.removeFromCart(i);
 				}
-			} catch (SQLException e) {
+			   } catch (SQLException e) {
 				
-			}
+			   }
     		   
     	   }
-    	   
-    	   UI.getCurrent().navigate("payment-form");
+    	  
+    	   Dialog dialog = new Dialog();
+    	   dialog.add(new Term("Once you leave this page you cannot alter cart. Proceed to PaymentPage?"));
+    	   dialog.setCloseOnEsc(false);
+    	   dialog.setCloseOnOutsideClick(false);
+    	   Span message = new Span();
+
+    	   Button confirmButton = new Button("Confirm", e -> {
+    	       dialog.close();
+    	       UI.getCurrent().navigate("payment-form");
+    	   });
+    	   Button cancelButton = new Button("Cancel", e-> {
+    	       dialog.close();
+    	   });
+    	   // Cancel action on ESC press
+    	   Shortcuts.addShortcutListener(dialog, () -> {
+    	       message.setText("Cancelled...");
+    	       dialog.close();
+    	   }, Key.ESCAPE);
+    	   dialog.add(new Div( confirmButton, cancelButton));
     	   }	   
        ));
        
