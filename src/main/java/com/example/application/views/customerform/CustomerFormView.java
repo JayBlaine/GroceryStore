@@ -75,8 +75,14 @@ public class CustomerFormView extends Div {
 					e1.printStackTrace();
 				}
             	try {
+            		LoginView.user.setFirst(firstName.getValue());
+            		LoginView.user.setLast(lastName.getValue());
+            		LoginView.user.setPhone(phone.getValue());
+            		String fin = street.getValue() + "-" + city.getValue() + "-" +  state.getValue() + "-" + country.getValue() + "-" + postalCode.getValue(); 
+            		LoginView.user.setAdd(fin);
 					Application.pgm.updatePass(LoginView.user, password.getValue(), LoginView.user.getpass());
-					Notification.show("Password changed successfully");
+					Application.pgm.updateAcc(LoginView.user);
+					Notification.show("Account details changed successfully");
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -117,8 +123,8 @@ public class CustomerFormView extends Div {
         formLayout.add(street, 2);
         postalCode.setPattern("\\d*");
         postalCode.setPreventInvalidInput(true);
-        country.setItems("Country 1", "Country 2", "Country 3");
-        state.setItems("State A", "State B", "State C", "State D");
+        country.setItems("United States of America", "Canada", "Mexico");
+        state.setItems("Arizona", "Texas", "Colorado", "Oklahoma");
         formLayout.add(postalCode, city, state, country);
         formLayout.add(password, confirm);
         return formLayout;

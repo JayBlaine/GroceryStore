@@ -90,7 +90,7 @@ public class HomePageView extends HorizontalLayout {
         	
         }
         if(LoginView.loggedIn)
-        	add(new Button("Logout", event->{LoginView.loggedIn = false; UI.getCurrent().navigate("Home-Page");}));
+        	add(new Button("Logout", event->{LoginView.loggedIn = false; UI.getCurrent().navigate("Login");}));
         //////////////////////////////////////////////////////////////////////////////
         //Grid
         ///////////////////////////////////////////////////////////////////////////////

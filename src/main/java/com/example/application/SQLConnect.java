@@ -141,10 +141,15 @@ public class SQLConnect implements Serializable{
 	
 	public void updateAcc(Account acc) throws SQLException {
 		statement = connect.createStatement();
-		statement.executeUpdate("update grocerystore.account set first=\'" + acc.getFirst() +
+		String temp = "update grocerystore.account set first=\'" + acc.getFirst() +
+				"\', last =\'" + acc.getLast() +
+				"\', address =\'" + acc.getAdd() +
+				"\', phone =\'" + acc.getPhone() + "\' where email = \'" + acc.getEmail()+"\'";
+		System.out.println(temp);
+				statement.executeUpdate("update grocerystore.account set first=\'" + acc.getFirst() +
 								"\', last =\'" + acc.getLast() +
 								"\', address =\'" + acc.getAdd() +
-								"\', phone =\'" + acc.getPhone() + "\'");
+								"\', phone =\'" + acc.getPhone() + "\' where email = \'" + acc.getEmail()+"\'");
 	}
 	
 	
